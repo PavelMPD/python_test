@@ -46,3 +46,19 @@ class BuiltInFunctionsTests(unittest.TestCase):
 
         not_callable_list = [object(), None, 1]
         [self.assertFalse(callable(item)) for item in not_callable_list]
+
+    def test_zip(self):
+        list1 = [1, 2, 3]
+        list2 = ['a', 'b', 'c', 'd']
+        zipped = zip(list1, list2)
+        self.assertEqual([(1, 'a'), (2, 'b'), (3, 'c')], list(zipped))
+
+    def test_map(self):
+        list1 = [1, 2]
+        list2 = [3, 1]
+        max_values = map(max, list1, list2)
+        self.assertEqual([3, 2], list(max_values))
+
+    def test_lambda(self):
+        max_values = map(lambda x, y: max(x, y), [1, 2, 9, 0], [3, 1, 10, -1])
+        self.assertEqual([3, 2, 10, 0], list(max_values))
