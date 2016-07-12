@@ -47,6 +47,21 @@ class BuiltInFunctionsTests(unittest.TestCase):
         not_callable_list = [object(), None, 1]
         [self.assertFalse(callable(item)) for item in not_callable_list]
 
+    def test_chr(self):
+        simbol = chr(90)
+        self.assertEqual('Z', simbol)
+
+    def test_classmethod(self):
+        class NewNotification(object):
+            _type = 'new notification'
+
+            @classmethod
+            def get_type(cls):
+                return cls._type
+        self.assertEqual('new notification', NewNotification.get_type())
+
+
+
     def test_zip(self):
         list1 = [1, 2, 3]
         list2 = ['a', 'b', 'c', 'd']
