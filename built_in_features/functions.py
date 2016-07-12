@@ -48,25 +48,54 @@ class BuiltInFunctionsTests(unittest.TestCase):
         [self.assertFalse(callable(item)) for item in not_callable_list]
 
     def test_chr(self):
-        simbol = chr(90)
-        self.assertEqual('Z', simbol)
+        letter = chr(97)
+        self.assertEqual('a', letter)
 
     def test_classmethod(self):
-        class NewNotification(object):
-            _type = 'new notification'
-
+        class One(object):
             @classmethod
-            def get_type(cls):
-                return cls._type
-        self.assertEqual('new notification', NewNotification.get_type())
+            def self(cls):
+                return cls
+
+        self.assertEqual(One, One.self())
+
+    # http://stackoverflow.com/questions/22443939/python-built-in-function-compile-what-is-it-used-for
+    def test_compile(self):
+        codes = compile('x = 3\nprint("X is", x)', 'my_module', 'exec')
+        exec(codes)
+        self.assertEqual(3, x)
+
+    def test_complex(self):
+        a = complex("1+2j")
+        self.assertEqual((1+2j), a)
+
+    def test_delattr(self):
+        class O(object): pass
+        o = O()
+        o.a = 5
+        self.assertTrue('a' in o.__dict__)
+        delattr(o, 'a') # del o.a
+        self.assertFalse('a' in o.__dict__)
+
+    def test_dict(self):
+        raise NotImplementedError('dict class usage')
+
+    def test_dir(self):
+        import built_in_features
+
+        class O(object):
+            def m(self):
+                pass
+        o = O()
+        o.a = 5
+        local_scope_names = dir()
+        self.assertEqual({'O', 'o', 'self', 'built_in_features'}, set(local_scope_names))
+        self.assertEqual({'a', 'm'}, {'a', 'm'}.intersection(dir(o)))
+
+    def test_divmod(self):
+        pass
 
 
-
-    def test_zip(self):
-        list1 = [1, 2, 3]
-        list2 = ['a', 'b', 'c', 'd']
-        zipped = zip(list1, list2)
-        self.assertEqual([(1, 'a'), (2, 'b'), (3, 'c')], list(zipped))
 
     def test_map(self):
         list1 = [1, 2]
@@ -77,3 +106,9 @@ class BuiltInFunctionsTests(unittest.TestCase):
     def test_lambda(self):
         max_values = map(lambda x, y: max(x, y), [1, 2, 9, 0], [3, 1, 10, -1])
         self.assertEqual([3, 2, 10, 0], list(max_values))
+
+    def test_zip(self):
+        list1 = [1, 2, 3]
+        list2 = ['a', 'b', 'c', 'd']
+        zipped = zip(list1, list2)
+        self.assertEqual([(1, 'a'), (2, 'b'), (3, 'c')], list(zipped))
