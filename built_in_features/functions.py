@@ -60,7 +60,8 @@ class BuiltInFunctionsTests(unittest.TestCase):
         self.assertEqual(One, One.self())
 
     # http://stackoverflow.com/questions/22443939/python-built-in-function-compile-what-is-it-used-for
-    def test_compile(self):
+    # http://python-lab.blogspot.com.by/2012/05/exec-pythona.html
+    def test_compile_and_exec(self):
         codes = compile('x = 3\nprint("X is", x)', 'my_module', 'exec')
         exec(codes)
         self.assertEqual(3, x)
@@ -93,7 +94,25 @@ class BuiltInFunctionsTests(unittest.TestCase):
         self.assertEqual({'a', 'm'}, {'a', 'm'}.intersection(dir(o)))
 
     def test_divmod(self):
-        pass
+        quotient, remainder = divmod(6, 4)
+        self.assertEqual((1, 2), (quotient, remainder))
+
+    def test_enumerate(self):
+        items = ['a', 'b']
+        enumerated_items = enumerate(items, start=1)
+        self.assertEqual([(1, 'a'), (2, 'b')], list(enumerated_items))
+
+    def test_eval(self):
+        x = 1
+        y = eval("x + 2")
+        self.assertEqual(3, y)
+
+    def test_filter(self):
+        result = filter(None, enumerate(['b', 'a'], start=1))
+        self.assertEqual([(1, 'b'), (2, 'a')], list(result))
+
+        result = filter(lambda x: x[1] != 'a', enumerate(['b', 'a'], start=1))
+        self.assertEqual([(1, 'b')], list(result))
 
 
 
