@@ -1,2 +1,4 @@
 .idea
 dj_post/.venv
+db.sqlite3
+*.pyc
