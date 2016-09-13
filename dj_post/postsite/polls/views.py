@@ -4,6 +4,7 @@ from django.template import loader
 from django.urls import reverse
 from django.db.models import F
 from django.views import generic
+from django.utils import timezone
 
 from polls.models import Question, Choice
 
@@ -13,7 +14,7 @@ class IndexView(generic.ListView):
     context_object_name = "questions" # question_list by default
 
     def get_queryset(self):
-        questions = Question.objects.order_by("-pub_date")[:5]
+        questions = Question.objects.filter(pub_date__lte=timezone.now().date()).order_by("-pub_date")[:5]
         return questions
 
 # def index(request):
