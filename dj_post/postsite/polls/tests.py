@@ -37,7 +37,23 @@ class QuestionIndexViewTests(TestCase):
 
     def test_index_view_with_a_future_question(self):
         Question.objects.create(
-            question_text="past question", pub_date=(timezone.now() + datetime.timedelta(days=1)).date())
+            question_text="future question", pub_date=(timezone.now() + datetime.timedelta(days=1)).date())
         response = self.client.get(reverse('polls:index'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['questions']), 0)
+
+
+class QuestionDetailViewTests(TestCase):
+    def test_detail_view_with_a_future_question(self):
+        question = Question.objects.create(
+            question_text="future question", pub_date=(timezone.now() + datetime.timedelta(days=5)).date())
+        url = reverse('polls:detail', args=(question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_detail_view_with_a_past_question(self):
+        question = Question.objects.create(
+            question_text="past question", pub_date=(timezone.now() - datetime.timedelta(days=5)).date())
+        url = reverse('polls:detail', args=(question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, question.question_text)
