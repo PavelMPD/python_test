@@ -1,0 +1,14 @@
+{% if questions %}
+    <table>
+    {% for question in questions %}
+        <tr>
+            <td><a href="{% url 'polls:edit_question' question.id %}">Edit</a></td>
+            <td><a href="{% url 'polls:delete_question' question.id %}">Delete</a></td>
+            <td><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No questions are available.</p>
+{% endif %}
+<a href="{% url 'polls:create_question' %}">Create a new question</a>

@@ -12,4 +12,13 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),
     # ex: /polls/5/vote/
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
+
+    # ex: /polls/questions
+    url(r'^questions/$', views.QuestionListView.as_view(), name='question_list'),
+    # ex: /polls/create
+    url(r'^questions/create/$', views.QuestionCreateView.as_view(), name='create_question'),
+    # ex: /polls/5/edit/
+    url(r'^questions/(?P<pk>[0-9]+)/edit/$', views.QuestionUpdateView.as_view(), name='edit_question'),
+    # ex: /polls/5/delete/
+    url(r'^questions/(?P<pk>[0-9]+)/delete/$', views.QuestionDeleteView.as_view(), name='delete_question'),
 ]
