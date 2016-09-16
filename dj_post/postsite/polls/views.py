@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.db.models import F
 from django.views import generic
 from django.utils import timezone
@@ -15,7 +15,7 @@ class IndexView(generic.ListView):
     context_object_name = "questions" # question_list by default
 
     def get_queryset(self):
-        questions = Question.objects.filter(pub_date__lte=timezone.now().date()).order_by("-pub_date")[:5]
+        questions = Question.objects.filter(pub_date__lte=timezone.now().date()).order_by("-pub_date")[:10]
         return questions
 
 # def index(request):
@@ -85,7 +85,12 @@ class QuestionCreateView(generic.CreateView):
     form_class = QuestionCreateForm
 
     def get_success_url(self):
-        return reverse("polls:index")
+        return reverse("polls:question_list")
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionCreateView, self).get_context_data(**kwargs)
+        context["submit_button_name"] = "Create"
+        return context
 
     # def form_invalid(self, form):
     #     response = super(QuestionCreateView, self).form_invalid(form)
@@ -98,11 +103,15 @@ class QuestionUpdateView(generic.UpdateView):
     form_class = QuestionUpdateForm
 
     def get_success_url(self):
-        return reverse("polls:index")
+        return reverse("polls:question_list")
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionUpdateView, self).get_context_data(**kwargs)
+        context["submit_button_name"] = "Update"
+        return context
 
 
 class QuestionDeleteView(generic.DeleteView):
     model = Question
-
-    def get_success_url(self):
-        return reverse("polls:index")
+    success_url = reverse_lazy("polls:question_list")
+    # template_name = "polls/question_confirm_delete.html"
