@@ -5,14 +5,17 @@ from django.urls import reverse, reverse_lazy
 from django.db.models import F
 from django.views import generic
 from django.utils import timezone
+# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from polls.models import Question, Choice
 from polls.forms import QuestionCreateForm, QuestionUpdateForm
 
 
-class IndexView(generic.ListView):
+# @login_required
+class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = "polls/index.html"
-    context_object_name = "questions" # question_list by default
+    context_object_name = "questions"  # question_list by default
 
     def get_queryset(self):
         questions = Question.objects.filter(pub_date__lte=timezone.now().date()).order_by("-pub_date")[:10]
