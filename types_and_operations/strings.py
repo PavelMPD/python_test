@@ -1,4 +1,5 @@
 import unittest
+from nose_parameterized import parameterized
 
 
 class StringTest(unittest.TestCase):
@@ -21,10 +22,27 @@ class StringTest(unittest.TestCase):
         l = list(s)
         self.assertFalse(isinstance(l, str))
 
-    def test_octal_escape(self):
-        s = "\000"
-        self.assertTrue(len(s), 1)
+    @parameterized.expand([
+        ("\0000", 2),
+        ("\1abc", 4),
+        ("\12abc", 4),
+    ])
+    def test_octal_escape(self, value, count):
+        self.assertTrue(len(value), count)
 
-    def test_hex_escape(self):
-        s = "\xFF"
-        self.assertTrue(len(s), 1)
+    @parameterized.expand([
+        ("\xFF", 1),
+        ("\x0A1", 2)
+    ])
+    def test_hex_escape(self, value, count):
+        self.assertTrue(len(value), count)
+
+    @parameterized.expand([
+        ("\t", 1),
+        ("\r\n", 2),
+        ("\v", 1),
+        ("\\", 1),
+    ])
+    def test_escape(self, value, count):
+        # https://en.wikipedia.org/wiki/Escape_sequences_in_C
+        self.assertTrue(len(value), count)
