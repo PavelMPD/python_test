@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import unittest
 from nose_parameterized import parameterized
 
@@ -46,3 +49,19 @@ class StringTest(unittest.TestCase):
     def test_escape(self, value, count):
         # https://en.wikipedia.org/wiki/Escape_sequences_in_C
         self.assertTrue(len(value), count)
+
+    def test_raw_string(self):
+        value = r"\\"
+        self.assertEqual(len(value), 2)
+
+    def test_unicode_string(self):
+        value = "текст"
+        self.assertTrue(isinstance(value, str))
+
+        # encode Unicode string by encoding to byte string
+        encoded_string = value.encode(encoding='utf-8')
+        self.assertTrue(encoded_string, bytes)
+
+        # decode byte string in encoding to Unicode string
+        decoded_string = encoded_string.decode(encoding='utf-8', errors='strict')
+        self.assertTrue(isinstance(decoded_string, str))
