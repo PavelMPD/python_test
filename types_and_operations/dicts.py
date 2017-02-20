@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import copy
 import unittest
+import collections
 
 
 class DictConstructionTest(unittest.TestCase):
@@ -122,3 +123,17 @@ class DictFetchTest(unittest.TestCase):
         self.assertEqual(
             0, len({k: v for k, v in d.items() if k == key and v == value}))
         self.assertEqual(1, len(d))
+
+    def test_setdefault(self):
+        d = {"login": "u1"}
+        v = d.setdefault("password")
+        self.assertEqual(d.keys(), {"login", "password"})
+        self.assertEqual(v, None)
+
+        v = d.setdefault("password", "123")
+        self.assertEqual(d.keys(), {"login", "password"})
+        self.assertEqual(v, None)
+
+
+class OrderedDictTest(unittest.TestCase):
+    pass
