@@ -136,4 +136,19 @@ class DictFetchTest(unittest.TestCase):
 
 
 class OrderedDictTest(unittest.TestCase):
-    pass
+    def test_order(self):
+        # it does not work properly!!!
+        # d = collections.OrderedDict(login="u1", password="123")
+
+        d = collections.OrderedDict([("login", "u1"), ("password", "123")])
+        k, v = d.popitem()
+        self.assertEqual(k, "password")
+        k, v = d.popitem()
+        self.assertEqual(k, "login")
+
+    def test_create_sorted_dict(self):
+        d = {3: "3", 1: "1", 2: "2"}
+        d = collections.OrderedDict(sorted(d.items(), key=lambda i: i[0]))
+        for key in (3, 2, 1):
+            k, v = d.popitem()
+            self.assertEqual(k, key)
