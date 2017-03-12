@@ -94,10 +94,41 @@ class StringTest(unittest.TestCase):
         self.assertEqual(result, "aaaaa")
 
     @parameterized.expand([
-        ("string", 1, None, None, "t")
+        ("string", lambda s: s[1], "t"),
+        ("string", lambda s: s[-1], "g"),
+        ("string", lambda s: s[-2], "n"),
+        ("string", lambda s: s[-1:], "g"),
+        ("string", lambda s: s[-2:], "ng"),
+        ("string", lambda s: s[0:2], "st"),
+        ("string", lambda s: s[0:6:2], "srn"),
     ])
-    def test_slice(self, s, i, j, k, expected_result):
-        result = None
-        if i and j is None and k is None:
-            result = s[i]
+    def test_slice(self, s, l, expected_result):
+        result = l(s)
         self.assertEqual(result, expected_result, (result, expected_result))
+
+    @parameterized.expand([
+        ("string", lambda s: s[::-1], "gnirts"),
+        ("string", lambda s: "".join(reversed(s)), "gnirts"),
+        ("string", lambda s: "".join(s[i] for i in range(len(s) - 1, -1, -1)), "gnirts"),
+    ])
+    def test_reverse(self, s, l, expected_result):
+        result = l(s)
+        self.assertEqual(result, expected_result, (result, expected_result))
+
+    def test_length(self):
+        s = "string"
+        self.assertEqual(len(s), 6)
+
+    @parameterized.expand([
+        ("b", 1),
+        ("в", 2),
+    ])
+    def test_byte_size(self, s, expected_size):
+        size = len(s.encode("utf-8"))
+        self.assertEqual(size, expected_size)
+
+    def test_formatting_expression(self):
+        pass
+
+    def test_formatting_method(self):
+        pass
