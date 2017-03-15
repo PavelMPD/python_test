@@ -127,8 +127,51 @@ class StringTest(unittest.TestCase):
         size = len(s.encode("utf-8"))
         self.assertEqual(size, expected_size)
 
-    def test_formatting_expression(self):
-        pass
+    @parameterized.expand([
+        (
+                "%s %r %c %c %d %i %o %x %f %%",
+                ("str", "repr", 1, "a", 9.0, 5, 16, 15, 1.23),
+                "str 'repr' \x01 a 9 5 20 f 1.230000 %"
+        ),
+        (
+            "%(one)i %(two)s",
+            {"one": 1, "two": "2"},
+            "1 2"
+        ),
+        (
+            "%d|%-5d|%5d|%+5d|%05d",
+            (123, 123, 123, 123, 123),
+            "123|123  |  123| +123|00123"
+        ),
+        (
+            "%d|%-5d|%5d|%+5d|%05d",
+            (1234567, 1234567, 1234567, 1234567, 1234567),
+            "1234567|1234567|1234567|+1234567|1234567"
+        ),
+        (
+            "%d|%-5d|%5d|%+5d|%05d",
+            (-123, -123, -123, -123, -123),
+            "-123|-123 | -123| -123|-0123"
+        ),
+        (
+            "%d|%-5d|%5d|%+5d|%05d",
+            (-1234567, -1234567, -1234567, -1234567, -1234567),
+            "-1234567|-1234567|-1234567|-1234567|-1234567"
+        ),
+        (
+            "%f|%5.2f|%0.0f|%0.1f|%1.1f",
+            (123.123, 123.123, 123.123, 123.123, 123.123),
+            "123.123000|123.12|123|123.1|123.1"
+        ),
+        ("%*.*f", (5, 1, 5.23), "  5.2"),
+    ])
+    def test_formatting_expression(self, expression, values, expected_result):
+        result = expression % values
+        self.assertEqual(result, expected_result)
 
-    def test_formatting_method(self):
-        pass
+    # @parameterized.expand([
+    #     ("{} {}", ("str", "repr"), "str repr"),
+    # ])
+    # def test_formatting_method(self, template, values, expected_result):
+    #     result = template.format(values)
+    #     self.assertEqual(result, expected_result)
