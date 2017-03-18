@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import sys
 import time
 import unittest
 from nose_parameterized import parameterized
@@ -127,6 +128,8 @@ class StringTest(unittest.TestCase):
         size = len(s.encode("utf-8"))
         self.assertEqual(size, expected_size)
 
+
+class StringFormattingTest(unittest.TestCase):
     @parameterized.expand([
         (
                 "%s %r %c %c %d %i %o %x %f %%",
@@ -169,9 +172,50 @@ class StringTest(unittest.TestCase):
         result = expression % values
         self.assertEqual(result, expected_result)
 
-    # @parameterized.expand([
-    #     ("{} {}", ("str", "repr"), "str repr"),
-    # ])
-    # def test_formatting_method(self, template, values, expected_result):
-    #     result = template.format(values)
-    #     self.assertEqual(result, expected_result)
+    @parameterized.expand([
+        ("{} {}", ("str", "repr"), dict(), "str repr"),
+        ("{1} {0}", ("str", "repr"), dict(), "repr str"),
+        ("{one} {two}", tuple(), {"one": 1, "two": 2}, "1 2"),
+        ("{1[kind]} {0.platform}", (sys, {"kind": "laptop"}), dict(), "laptop linux"),
+        ("{0:>3} {1:<3}", ("0", "1"), dict(), "  0 1  "),
+        ("{0:f}, {1:.2f}, {2:06.2f}", (3.14159, 3.14159, 3.14159), dict(), "3.141590, 3.14, 003.14"),
+        ("{0:X}, {1:o}, {2:b}", (255, 255, 255), dict(), "FF, 377, 11111111"),
+        ("{number:.{precision}f}", tuple(), {"number": 3.1415, "precision": 3}, "3.142")
+    ])
+    def test_formatting_method(self, template, args, kwargs, expected_result):
+        result = template.format(*args, **kwargs)
+        self.assertEqual(result, expected_result)
+
+    @parameterized.expand([
+        (3.1415, ".2f", "3.14"),
+        (3.1415, "^8.2f", "  3.14  "),
+        (3333.1415, ",.2f", "3,333.14"),
+    ])
+    def test_format_function(self, value, format_spec, expected_result):
+        self.assertEqual(format(value, format_spec), expected_result)
+
+
+class StringMethodsTest(unittest.TestCase):
+    @parameterized.expand([
+        ("abc", "capitalize", None, None, "Abc"),
+        ("abc", "casefold", None, None, "abc"),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+        ("abc", "", None, None, ""),
+    ])
+    def test_method(self, value, method, args, kwargs, expected_result):
+        if not method:
+            return
+        if args and kwargs:
+            result = getattr(value, method)(*args, **kwargs)
+        else:
+            result = getattr(value, method)()
+        self.assertEqual(result, expected_result)
